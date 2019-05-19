@@ -839,6 +839,11 @@ CGroupExpression::Transform
 	ULONG *pulElapsedTime // output: elapsed time in millisecond
 	)
 {
+	//jungle dbg
+	{
+		CAutoTrace at(m_mp);
+		pxform->OsPrint(at.Os());
+	}
 	GPOS_ASSERT(NULL != pulElapsedTime);
 	GPOS_CHECK_ABORT;
 
@@ -882,6 +887,16 @@ CGroupExpression::Transform
 
 	CExpression *pexprPattern = pxform->PexprPattern();
 	CExpression *pexpr = binding.PexprExtract(mp, this, pexprPattern , NULL);
+	//jungle dbg
+	{
+		CAutoTrace at(m_mp);
+		pexprPattern->OsPrint(at.Os());
+	}
+	//jungle dbg
+	{
+		CAutoTrace at(m_mp);
+		pexpr->OsPrint(at.Os());
+	}
 	while (NULL != pexpr)
 	{
 		ULONG ulNumResults = pxfres->Pdrgpexpr()->Size();

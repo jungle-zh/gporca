@@ -133,7 +133,7 @@ CEngine::InitLogicalExpression
 {
 	GPOS_ASSERT(NULL == m_pmemo->PgroupRoot() && "Root is already set");
 	GPOS_ASSERT(pexpr->Pop()->FLogical());
-
+    pexpr->DbgPrint();
 	CGroup *pgroupRoot = PgroupInsert(NULL /*pgroupTarget*/, pexpr, CXform::ExfInvalid, NULL /*pgexprOrigin*/, false /*fIntermediate*/);
 	m_pmemo->SetRoot(pgroupRoot);
 }
@@ -382,6 +382,9 @@ CEngine::InsertXformResult
 	CExpression *pexpr = pxfres->PexprNext();
 	while (NULL != pexpr)
 	{
+        {
+
+        }
 		CGroup *pgroupContainer = PgroupInsert(pgroupOrigin, pexpr, exfidOrigin, pgexprOrigin, false /*fIntermediate*/);
 		if (pgroupContainer != pgroupOrigin && FPossibleDuplicateGroups(pgroupContainer, pgroupOrigin))
 		{
@@ -744,8 +747,26 @@ CEngine::ApplyTransformations
 		// transform group expression, and insert results to memo
 		CXformResult *pxfres = GPOS_NEW(m_mp) CXformResult(m_mp);
 		ULONG ulElapsedTime = 0;
+
+		//jungle dbg
+        {
+            CAutoTrace at(m_mp);
+            pgexpr->OsPrint(at.Os());
+        }
+
 		pgexpr->Transform(m_mp, pmpLocal, pxform, pxfres, &ulElapsedTime);
+        {
+            std::cout<<"before InsertXformResult ,memo "<<std::endl;
+            CAutoTrace at(m_mp);
+            m_pmemo->OsPrint(at.Os());
+        }
 		InsertXformResult(pgexpr->Pgroup(), pxfres, pxform->Exfid(), pgexpr, ulElapsedTime);
+
+        {
+            std::cout<<"after  InsertXformResult,memo "<<std::endl;
+            CAutoTrace at(m_mp);
+            m_pmemo->OsPrint(at.Os());
+        }
 		pxfres->Release();
 
 		if (PssCurrent()->FTimedOut())
@@ -779,6 +800,7 @@ CEngine::TransitionGroupExpression
 	{
 		return;
 	}
+    pgexpr->DbgPrint();
 
 	CGroupExpression::EState estInitial = CGroupExpression::estExploring;
 	CGroup::EState estGroupTargetState = CGroup::estExplored;
@@ -792,7 +814,11 @@ CEngine::TransitionGroupExpression
 
 	// transition all child groups
 	ULONG arity = pgexpr->Arity();
-	for (ULONG i = 0; i < arity; i++)
+
+    for (ULONG i = 0; i < arity; i++) {
+        (*pgexpr)[i]->DbgPrint();
+    }
+    for (ULONG i = 0; i < arity; i++)
 	{
 		TransitionGroup(pmpLocal, (*pgexpr)[i], estGroupTargetState);
 
@@ -808,6 +834,13 @@ CEngine::TransitionGroupExpression
 
 	// get all applicable xforms
 	COperator *pop = pgexpr->Pop();
+
+	//jungle dbg
+    {
+        CAutoTrace at(m_mp);
+        (void) pop->OsPrint(at.Os());
+    }
+
 	CXformSet *pxfsCandidates = CLogical::PopConvert(pop)->PxfsCandidates(m_mp);
 
 	// intersect them with the required set of xforms, then apply transformations
@@ -844,6 +877,7 @@ CEngine::TransitionGroup
 		return;
 	}
 
+    pgroup->DbgPrint();
 	GPOS_ASSERT(CGroup::estExplored == estTarget ||
 				CGroup::estImplemented == estTarget);
 
@@ -901,6 +935,12 @@ CEngine::TransitionGroup
 				CGroupProxy gp(pgroup);
 				pgexprCurrent = gp.PgexprNext(pgexprCurrent);
 			}
+			{
+                //jungle dbg
+                std::cout<<"pgexprCurrent is : " << std::endl;
+                CAutoTrace at(m_mp);
+                (void) pgexprCurrent->OsPrint(at.Os());
+            }
 
 			GPOS_CHECK_ABORT;
 		}
@@ -909,6 +949,8 @@ CEngine::TransitionGroup
 		{
 			CGroupProxy gp(pgroup);
 			gp.SetState(estTarget);
+			std::cout<<" group  set to " << estTarget << std::endl;
+            pgroup->DbgPrint();
 		}
 	}
 }

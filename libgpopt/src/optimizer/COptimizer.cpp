@@ -382,7 +382,14 @@ COptimizer::PexprOptimize
 {
 	CEngine eng(mp);
 	eng.Init(pqc, search_stage_array);
-	eng.Optimize();
+	//eng.Optimize();
+    if(GPOS_FTRACE(EopttraceForceOptimizeSerialize)){
+        eng.RecursiveOptimize();
+    }
+    else {
+        eng.Optimize();
+    }
+
 
 	GPOS_CHECK_ABORT;
 
