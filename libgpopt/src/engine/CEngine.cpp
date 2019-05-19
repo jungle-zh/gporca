@@ -915,6 +915,12 @@ CEngine::TransitionGroup
 
 		while (NULL != pgexprCurrent)
 		{
+			{
+				//jungle dbg
+				std::cout<<"pgexprCurrent is : " << std::endl;
+				CAutoTrace at(m_mp);
+				(void) pgexprCurrent->OsPrint(at.Os());
+			}
 			if (!pgexprCurrent->FTransitioned(estGExprTargetState))
 			{
 				TransitionGroupExpression
@@ -935,12 +941,7 @@ CEngine::TransitionGroup
 				CGroupProxy gp(pgroup);
 				pgexprCurrent = gp.PgexprNext(pgexprCurrent);
 			}
-			{
-                //jungle dbg
-                std::cout<<"pgexprCurrent is : " << std::endl;
-                CAutoTrace at(m_mp);
-                (void) pgexprCurrent->OsPrint(at.Os());
-            }
+
 
 			GPOS_CHECK_ABORT;
 		}
