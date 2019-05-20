@@ -2112,6 +2112,8 @@ CGroup::OsPrint
 
 		GPOS_CHECK_ABORT;
 	}
+	CAutoTraceFlag atf0(EopttracePrintGroupProperties, true);
+	CAutoTraceFlag atf1(EopttracePrintOptimizationContext, true);
 
 	(void) OsPrintGrpProps(os, szPrefix);
 	(void) OsPrintGrpOptCtxts(os, szPrefix);

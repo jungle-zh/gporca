@@ -1231,7 +1231,9 @@ CGroupExpression::OsPrint
 			<< " Dup. of GrpExpr " << m_pgexprDuplicate->Id()
 			<< " in Grp " << m_pgexprDuplicate->Pgroup()->Id();
 	}
+	//jungle dbg
 
+	CAutoTraceFlag atf0(EopttracePrintXform, true);
 	if (GPOS_FTRACE(EopttracePrintXform) && ExfidOrigin() != CXform::ExfInvalid)
 	{
 		os << " Origin: ";
@@ -1244,6 +1246,7 @@ CGroupExpression::OsPrint
 	}
 	os << std::endl;
 
+	CAutoTraceFlag atf1(EopttracePrintOptimizationContext, true);
 	(void) OsPrintCostContexts(os, szPrefix);
 
 	return os;
