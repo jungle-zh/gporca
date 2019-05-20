@@ -922,9 +922,9 @@ CEngine::TransitionGroup
 		{
 			{
 				//jungle dbg
-				std::cout<<"pgexprCurrent is : " << std::endl;
-				CAutoTrace at(m_mp);
-				(void) pgexprCurrent->OsPrint(at.Os());
+				std::wcout<<"pgexprCurrent is : " << std::endl;
+				//CAutoTrace at(m_mp);
+				//(void) pgexprCurrent->OsPrint(at.Os());
 			}
 			if (!pgexprCurrent->FTransitioned(estGExprTargetState))
 			{
@@ -955,7 +955,7 @@ CEngine::TransitionGroup
 		{
 			CGroupProxy gp(pgroup);
 			gp.SetState(estTarget);
-			std::cout<<" group  set to " << estTarget << std::endl;
+			std::wcout<<" group  set to " << estTarget << std::endl;
             //pgroup->DbgPrint();
 		}
 	}
@@ -1385,15 +1385,35 @@ CEngine::RecursiveOptimize()
 
 		// apply exploration xforms
 		Explore();
+		{
+			//jungle comment;
+			CAutoTrace at(m_mp);
+			at.Os() << "## explore finish ,start FinalizeExploration" << std::endl ;
+		}
 
 		// run exploration completion operations
 		FinalizeExploration();
-
+		{
+			//jungle comment;
+			CAutoTrace at(m_mp);
+			at.Os() << "## FinalizeExploration finish ,start Implement" << std::endl ;
+		}
 		// apply implementation xforms
 		Implement();
+		{
+			//jungle comment;
+			CAutoTrace at(m_mp);
+			at.Os() << "## Implement finish ,start FinalizeImplementation" << std::endl ;
+		}
 
 		// run implementation completion operations
 		FinalizeImplementation();
+
+		{
+			//jungle comment;
+			CAutoTrace at(m_mp);
+			at.Os() << "## FinalizeImplementation finish ,start optimize" << std::endl ;
+		}
 
 		// optimize root group
 		m_pqc->Prpp()->AddRef();
