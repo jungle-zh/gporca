@@ -202,7 +202,9 @@ namespace gpos
 				ULONG trace
 				)
 			{
-				return this->m_task_ctxt->IsTraceSet(trace);
+				//return this->m_task_ctxt->IsTraceSet(trace);
+
+				return  trace > -1;
 			}
 
 			
