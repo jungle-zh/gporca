@@ -840,6 +840,7 @@ CGroupExpression::Transform
 	)
 {
 	//jungle dbg
+	if(pxform != NULL)
 	{
 		CAutoTrace at(m_mp);
 		pxform->OsPrint(at.Os());
@@ -888,11 +889,13 @@ CGroupExpression::Transform
 	CExpression *pexprPattern = pxform->PexprPattern();
 	CExpression *pexpr = binding.PexprExtract(mp, this, pexprPattern , NULL);
 	//jungle dbg
+        if(pexprPattern != NULL)
 	{
 		CAutoTrace at(m_mp);
 		pexprPattern->OsPrint(at.Os());
 	}
 	//jungle dbg
+        if(pexpr != NULL)
 	{
 		CAutoTrace at(m_mp);
 		pexpr->OsPrint(at.Os());

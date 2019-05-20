@@ -749,12 +749,14 @@ CEngine::ApplyTransformations
 		ULONG ulElapsedTime = 0;
 
 		//jungle dbg
+	if(pgexpr !=  NULL)
         {
             CAutoTrace at(m_mp);
             pgexpr->OsPrint(at.Os());
         }
 
 		pgexpr->Transform(m_mp, pmpLocal, pxform, pxfres, &ulElapsedTime);
+		//jungle dbg
         {
             std::cout<<"before InsertXformResult ,memo "<<std::endl;
             CAutoTrace at(m_mp);
@@ -762,6 +764,7 @@ CEngine::ApplyTransformations
         }
 		InsertXformResult(pgexpr->Pgroup(), pxfres, pxform->Exfid(), pgexpr, ulElapsedTime);
 
+		//jungle dbg
         {
             std::cout<<"after  InsertXformResult,memo "<<std::endl;
             CAutoTrace at(m_mp);
@@ -836,10 +839,11 @@ CEngine::TransitionGroupExpression
 	COperator *pop = pgexpr->Pop();
 
 	//jungle dbg
-    {
-        CAutoTrace at(m_mp);
-        (void) pop->OsPrint(at.Os());
-    }
+        if(pop != NULL)
+        {
+            CAutoTrace at(m_mp);
+            (void) pop->OsPrint(at.Os());
+        }
 
 	CXformSet *pxfsCandidates = CLogical::PopConvert(pop)->PxfsCandidates(m_mp);
 
@@ -877,7 +881,8 @@ CEngine::TransitionGroup
 		return;
 	}
 
-    pgroup->DbgPrint();
+        //jungle dbg
+        pgroup->DbgPrint();
 	GPOS_ASSERT(CGroup::estExplored == estTarget ||
 				CGroup::estImplemented == estTarget);
 
@@ -951,7 +956,7 @@ CEngine::TransitionGroup
 			CGroupProxy gp(pgroup);
 			gp.SetState(estTarget);
 			std::cout<<" group  set to " << estTarget << std::endl;
-            pgroup->DbgPrint();
+            //pgroup->DbgPrint();
 		}
 	}
 }
