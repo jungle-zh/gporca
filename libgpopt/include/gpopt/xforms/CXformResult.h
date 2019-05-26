@@ -64,6 +64,7 @@ namespace gpopt
 
 			// print function
 			IOstream &OsPrint(IOstream &) const;
+                  	void DbgPrint();
 
 	}; // class CXformResult
 

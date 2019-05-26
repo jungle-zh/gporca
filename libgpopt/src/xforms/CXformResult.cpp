@@ -121,5 +121,19 @@ CXformResult::OsPrint
 	return os;
 }
 
+void
+CXformResult::DbgPrint(){
+        std::wostream& os = std::wcout;  
+       
+         os << "Alternatives:" << std::endl;
+
+        for (ULONG i = 0; i < m_pdrgpexpr->Size(); i++)
+        {
+                os << i << ": " << std::endl;
+                (*m_pdrgpexpr)[i]->DbgPrint();
+        }
+
+
+}
 // EOF
 
